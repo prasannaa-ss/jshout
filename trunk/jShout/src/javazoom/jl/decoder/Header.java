@@ -172,6 +172,13 @@ public final class Header
 				h_intensity_stereo_bound = h_number_of_subbands;
 			// calculate framesize and nSlots
 			calculate_framesize();
+			
+			/** 
+			 * 	jShout Edit:
+			 * 	A lot of code here was deleted.  This code was used to
+			 * 	read the data from the mp3 bitstream, something that
+			 * 	was not needed or wanted.
+			 */
 	}
 
 	/**

@@ -27,35 +27,43 @@ import javazoom.jl.decoder.*;
 import java.io.*;
 
 public class MP3Audio {
-	private InputStream is;
+	private PushbackInputStream is;
 	
 	public MP3Audio(File f) throws FileNotFoundException {
-		is = new BufferedInputStream(new FileInputStream(f));
+		is = new PushbackInputStream(new FileInputStream(f));
 		
+		// add id3 parsing here
+		// read 10 bytes
+		// else unread 10 bytes
 	}
 	
 	public Segment getNextFrame() {
 		try {
+			// read 4 bytes of data (Frame Header)
 			byte[] head = new byte[4];
 			is.read(head);
 			
+			// create an input stream for the header
 			InputStream bais = new ByteArrayInputStream(head);
 			Bitstream bs = new Bitstream(bais);
 			
+			// "read" the frame (find out size)
 			Header h = bs.readFrame();
 			
+			// create an array to hold the frame data
 			byte[] frame = new byte[4 + h.calculate_framesize()];
+			
+			// add header bytes to the frame
 			for (int i = 0; i < 4; i++) {
 				frame[i] = head[i];
 			}
 			
-			
+			// read the rest of the frame data
 			try {
 				is.read(frame, 4, (frame.length-4));
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			
 			
 			return new Segment(frame, (int)h.ms_per_frame());
 		} catch (Exception e) {

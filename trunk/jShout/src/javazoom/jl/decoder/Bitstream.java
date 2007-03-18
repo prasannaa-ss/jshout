@@ -173,7 +173,7 @@ public final class Bitstream implements BitstreamErrors
 		try
 		{
 			// Read ID3v2 header (10 bytes).
-			in.mark(10);			
+			in.mark(10);
 			size = readID3v2Header(in);
 			header_pos = size;			
 		}
