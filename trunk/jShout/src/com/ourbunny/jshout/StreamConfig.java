@@ -35,87 +35,172 @@ public class StreamConfig {
 	private String		description;
 	private boolean		isPublic = true;
 	
+	/**
+	 * Get the Stream's description
+	 * @return the description of the Stream
+	 */
 	public String getDescription() {
 		return description;
 	}
 	
+	/**
+	 * Set the Stream's description
+	 * @param description the description of the Stream
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
+	/**
+	 * Get the Stream's genre
+	 * @return the Stream's genre
+	 */
 	public String getGenre() {
 		return genre;
 	}
 	
+	/**
+	 * Set the Stream's genre
+	 * @param genre the Stream's genre
+	 */
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
 	
+	/**
+	 * Get the hostname for the Stream to connect to
+	 * @return the hostname of the server to connect to
+	 */
 	public String getHostname() {
 		return hostname;
 	}
 	
+	/**
+	 * Sets the hostname for the Stream connect to
+	 * @param hostname The hostname of the server to connect to
+	 */
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
 	
+	/**
+	 * Get the port number on the host to connect to
+	 * @return the port number on the host to connect to
+	 */
 	public int getHostport() {
 		return hostport;
 	}
 	
+	/**
+	 * Set the port number on the host to connect to
+	 * @param hostport the port number on the host to connect to
+	 */
 	public void setHostport(int hostport) {
 		this.hostport = hostport;
 	}
 	
+	/**
+	 * Check if the Stream should be listed as public
+	 * @return whether or not the Stream is public
+	 */
 	public boolean isPublic() {
 		return isPublic;
 	}
 	
+	/**
+	 * Set the Stream to be listed as public or not
+	 * @param isPublic whether or not the Stream is public
+	 */
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
 	
+	/**
+	 * Get the mountpoint used to connect to the server
+	 * @return the name of the mountpoint
+	 */
 	public String getMount() {
 		return mount;
 	}
 	
+	/**
+	 * Set the mountpoint used to connect to the server
+	 * @param mount the name of the mountpoint
+	 */
 	public void setMount(String mount) {
 		this.mount = mount;
 	}
 	
+	/**
+	 * Get the name of the stream
+	 * @return the name of the stream
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Sets the name of the stream
+	 * @param name the name of the stream
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Get the password to connect to the server
+	 * @return The password in plaintext
+	 */
 	public String getPassword() {
 		return password;
 	}
 	
+	/**
+	 * Set the password to connect to the server
+	 * @param password the password in plaintext
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 	
+	/**
+	 * Get the username to connect to the server with
+	 * @return the username
+	 */
 	public String getUsername() {
 		return username;
 	}
 	
+	/**
+	 * Sets the username to connect to the server with
+	 * @param username the username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 	
+	/**
+	 * Get the UserAgent string used in HTTP
+	 * @return the UserAgent
+	 */
 	public String getAgent() {
 		return agent;
 	}
 	
-	public String getBase64Auth() {
+	// Private method to generate the username:password
+	// combination used in the HTTP request.
+	// Relies on the Base64.java library.
+	private String getBase64Auth() {
 		String i = getUsername() + ":" + getPassword();
 		return Base64.encodeBytes(i.getBytes());
 	}
 	
+	/**
+	 * Get the HTTP Request byte array used to initiate
+	 * A connection with the icecast server
+	 * 
+	 * @return the HTTP Request byte array
+	 */
 	public byte[] getHttpRequest() {
 		String RN = "\r\n";
 		String request = "SOURCE /" + getMount() + " HTTP/1.0" + RN;
@@ -140,6 +225,7 @@ public class StreamConfig {
 	}
 
 	/*
-	 * ID3 Header, get/set get HttpRequest()
+	 * TODO:
+	 * 		ID3 Header, get/set get HttpRequest()
 	 */
 }

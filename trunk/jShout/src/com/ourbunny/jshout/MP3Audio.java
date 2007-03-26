@@ -26,6 +26,7 @@ package com.ourbunny.jshout;
 import javazoom.jl.decoder.*;
 import java.io.*;
 
+// change to implement Iterator?
 public class MP3Audio {
 	private PushbackInputStream is;
 	
@@ -35,6 +36,7 @@ public class MP3Audio {
 		// add id3 parsing here
 		// read 10 bytes
 		// else unread 10 bytes
+		// http://jicyshout.sourceforge.net/oreilly-article/java-streaming-mp3-pt2/java-streaming-mp3-pt2.html
 	}
 	
 	public Segment getNextFrame() {

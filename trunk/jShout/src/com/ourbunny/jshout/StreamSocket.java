@@ -32,6 +32,16 @@ public class StreamSocket {
 	private BufferedReader br = null;
 	private OutputStream os = null;
 	
+	/**
+	 * Create a StreamSocket from a Socket.
+	 * 
+	 * The StreamSocket wrapper makes it easier to read and write data
+	 * to the Socket.
+	 * 
+	 * @param s The Socket to build the StreamSocket off of
+	 * @throws IOException
+	 * @throws SocketException
+	 */
 	public StreamSocket(Socket s) throws IOException, SocketException {
 		socket = s;
 		socket.setTcpNoDelay(true);		// throws SocketException
@@ -40,6 +50,9 @@ public class StreamSocket {
 		os = s.getOutputStream();		// throws IOException
 	}
 	
+	/**
+	 * Close the Streams associated with the StreamSocket
+	 */
 	public void close() {
 		try {
 			socket.shutdownOutput();
@@ -49,6 +62,10 @@ public class StreamSocket {
 		} catch (IOException e) { }
 	}
 	
+	/**
+	 * Attempt to read a line from the Stream
+	 * @return Data from the Stream or <var>null</var> if there is no data to read
+	 */
 	public String readLine() {
 		try {
 			return br.readLine();
@@ -57,15 +74,30 @@ public class StreamSocket {
 		}
 	}
 	
+	/**
+	 * Write a String to the Stream then terminates the line.
+	 * @param s The <var>String</var> to be written
+	 * @throws IOException
+	 */
 	public void println(String s) throws IOException {
 		os.write(s.getBytes());
 		os.write("\r\n".getBytes());
 	}
 	
+	/**
+	 * Flushes the output Stream.
+	 * Forces any buffered data to be written to the Stream.
+	 * @throws IOException
+	 */
 	public void flush() throws IOException {
 		os.flush();
 	}
 	
+	/**
+	 * Write bytes to the output Stream
+	 * @param s an array of bytes to write to the Stream
+	 * @throws IOException
+	 */
 	public void print(byte[] s) throws IOException {
 		os.write(s);
 	}
