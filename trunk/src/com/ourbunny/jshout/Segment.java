@@ -69,4 +69,12 @@ public class Segment {
 	public void setTime(long time) {
 		this.time = time;
 	}
+	
+	/**
+	 * Get Data size
+	 * @return the number of bytes in the segment
+	 */
+	public int getSize() {
+		return this.data.length;
+	}
 }
