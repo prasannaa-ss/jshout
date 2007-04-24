@@ -26,6 +26,7 @@ package com.ourbunny.jshout.testing;
 
 import java.io.*;
 import com.ourbunny.jshout.*;
+import com.ourbunny.jshout.FileReader;
 
 public class Tester {
 
@@ -48,17 +49,16 @@ public class Tester {
 		File f1 = new File("cake.mp3");
 		
 		try {
-			MP3Audio m3a = new MP3Audio(f1);
+			FileReader m3a = new MP3Reader(f1);
 			
 			if (!sout.connect()) {
 				System.out.println("connection error");
 			}
-			Segment sendData;
 			
 			System.out.println("sending data...");
 			int i = 0;
-			while ((sendData = m3a.getNextFrame()) != null) {
-				sout.send(sendData);
+			while (m3a.hasNext()) {
+				sout.send(m3a.next());
 				if (i < 40) {
 					i++;
 					System.out.print('.');
@@ -66,7 +66,6 @@ public class Tester {
 					i = 0;
 					System.out.println('.');
 				}
-				
 			}
 			System.out.println("done!");
 		} catch (Exception e) {

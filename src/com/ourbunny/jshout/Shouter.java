@@ -61,7 +61,8 @@ public class Shouter{
 			connected = true;
 			return true;
 		} else {
-			connected = false;
+			// fix logic here
+			// connected = false;
 			return false;
 		}
 	}
@@ -84,6 +85,8 @@ public class Shouter{
 			return false;
 		}
 	}
+	
+	// add a sync function
 	
 	// add a close function
 }
