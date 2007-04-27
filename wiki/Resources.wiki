@@ -1,13 +1,17 @@
 #summary Some helpful websites/information for developing jShout
+#labels Phase-Support
 
+= Resources =
+It was kind of hard for me to find some of the information I needed to start this project so I'm gonna try to keep track of all the places that have helped me.
 
-= MP3 Resources =
+== MP3 ==
  * [http://jicyshout.sourceforge.net/oreilly-article/java-streaming-mp3-pt2/java-streaming-mp3-pt2.html id3 tags]
  * [http://www.javazoom.net/javalayer/javalayer.html play mp3s in java]
 
-= Shoutcast Protocol =
+== Shoutcast ==
  * [http://forums.radiotoolbox.com/viewtopic.php?t=74 explanation]
 
-= Other =
+== Applications ==
  * [http://www.jcraft.com/jroar/ jroar - java version of icecast]
  * [http://www.icecast.org icecast]
+
