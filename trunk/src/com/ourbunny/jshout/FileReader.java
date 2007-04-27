@@ -36,16 +36,30 @@ public abstract class FileReader implements Iterator<Segment>{
 	// stores the next segment
 	protected Segment toReturn;
 	
+	/**
+	 * Create a new FileReader object
+	 * @param f the File to read
+	 * @param size the size (in bytes) of the Segments
+	 * @throws FileNotFoundException
+	 */
 	public FileReader(File f, int size) throws FileNotFoundException {
 		this.f = f;
 		this.size = size;
 	}
 	
+	/**
+	 * Create a new FileReader object with size = 4096 bytes
+	 * @param f the File to read
+	 * @throws FileNotFoundException
+	 */
 	public FileReader(File f) throws FileNotFoundException {
 		this.f = f;
 		// size = 4096 bytes
 	}
 	
+	/**
+	 * Returns true if the FileReader has more Segments
+	 */
 	public boolean hasNext() {
 		if (toReturn == null) {
 			return false;
@@ -53,9 +67,14 @@ public abstract class FileReader implements Iterator<Segment>{
 		return true;
 	}
 	
-	// sub classes must override this
+	/**
+	 * Returns the next Segment from the FileReader
+	 */
 	public abstract Segment next();
 	
+	/**
+	 * Not Implemented!
+	 */
 	public void remove() {
 		// not implemented
 	}
