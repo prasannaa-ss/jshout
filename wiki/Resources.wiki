@@ -2,14 +2,12 @@
 
 
 = MP3 Resources =
-* [http://jicyshout.sourceforge.net/oreilly-article/java-streaming-mp3-pt2/java-streaming-mp3-pt2.html id3 tags]
-* [http://www.javazoom.net/javalayer/javalayer.html play mp3s in java]
+ * [http://jicyshout.sourceforge.net/oreilly-article/java-streaming-mp3-pt2/java-streaming-mp3-pt2.html id3 tags]
+ * [http://www.javazoom.net/javalayer/javalayer.html play mp3s in java]
 
 = Shoutcast Protocol =
-* [http://forums.radiotoolbox.com/viewtopic.php?t=74 explanation]
+ * [http://forums.radiotoolbox.com/viewtopic.php?t=74 explanation]
 
 = Other =
-* [http://www.jcraft.com/jroar/ jroar - java version of icecast]
-* [http://www.icecast.org icecast]
-
-
+ * [http://www.jcraft.com/jroar/ jroar - java version of icecast]
+ * [http://www.icecast.org icecast]
