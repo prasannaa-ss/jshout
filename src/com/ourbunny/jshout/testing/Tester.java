@@ -35,7 +35,7 @@ public class Tester {
 	 */
 	public static void main(String[] args) {
 		StreamConfig sc = new StreamConfig();
-		sc.setHostname("192.168.1.35");
+		sc.setHostname("172.26.17.19");
 		sc.setHostport(8000);
 		sc.setUsername("source");
 		sc.setPassword("hackme");
@@ -43,8 +43,6 @@ public class Tester {
 		sc.setName("helllooo");
 		
 		Shouter sout = new Shouter(sc);
-		
-		//new Thread(sout).start();
 		
 		File f1 = new File("cake.mp3");
 		
@@ -69,7 +67,7 @@ public class Tester {
 			}
 			System.out.println("done!");
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 
 	}

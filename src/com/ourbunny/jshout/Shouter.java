@@ -33,10 +33,19 @@ public class Shouter{
 	private StreamSocket mysocket;
 	private boolean connected = false;
 	
+	/**
+	 * Creates a new Shouter based on the StreamConfig settings
+	 * @param c the StreamConfig settings
+	 */
 	public Shouter(StreamConfig c) {
 		this.config = c;
 	}
 	
+	/**
+	 * Connect to the icecast server 
+	 * @return true if the connect is established
+	 * @throws Exception
+	 */
 	public boolean connect() throws Exception{
 		if (!connected) {
 			Socket shoutSocket = new Socket(config.getHostname(), config.getHostport());  // unknown host exception
@@ -67,6 +76,12 @@ public class Shouter{
 		}
 	}
 	
+	/**
+	 * Send a Segment of data to the server.
+	 * @param s the Segment of data to send to the server
+	 * @return true if the Segment was sent successfully
+	 * @throws Exception
+	 */
 	public boolean send(Segment s) throws Exception{
 		if (connected) {
 			
@@ -88,5 +103,11 @@ public class Shouter{
 	
 	// add a sync function
 	
-	// add a close function
+	/**
+	 * Close the connection to the icecast server
+	 */
+	public void close() {
+		this.connected = false;
+		this.mysocket.close();
+	}
 }
