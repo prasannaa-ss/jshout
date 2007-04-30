@@ -57,6 +57,7 @@ public class Tester {
 			int i = 0;
 			while (m3a.hasNext()) {
 				sout.send(m3a.next());
+				sout.sync();
 				if (i < 40) {
 					i++;
 					System.out.print('.');
