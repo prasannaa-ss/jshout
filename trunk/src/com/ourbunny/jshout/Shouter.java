@@ -33,6 +33,10 @@ public class Shouter{
 	private StreamSocket mysocket;
 	private boolean connected = false;
 	
+	// timing variables
+	private long sentTime = 0;
+	private long sleepTime = 0;
+	
 	/**
 	 * Creates a new Shouter based on the StreamConfig settings
 	 * @param c the StreamConfig settings
@@ -79,29 +83,34 @@ public class Shouter{
 	/**
 	 * Send a Segment of data to the server.
 	 * @param s the Segment of data to send to the server
-	 * @return true if the Segment was sent successfully
 	 * @throws Exception
 	 */
-	public boolean send(Segment s) throws Exception{
+	public void send(Segment s) throws Exception{
 		if (connected) {
-			
+			// write data
 			mysocket.print(s.getData()); // IO exception
 			mysocket.flush();
 			
-			try {
-				Thread.sleep(s.getTime());
-			} catch (Exception e) {
-				System.out.println(e + "error");
-				return false;
-			}
-			
-			return true;
-		} else {
-			return false;
+			// update timing
+			sentTime = System.currentTimeMillis();
+			sleepTime += s.getTime();
 		}
 	}
 	
-	// add a sync function
+	/**
+	 * Waits until more data is required for the stream
+	 */
+	public void sync() {
+		if (sleepTime > 0 ) {
+			try {
+				Thread.sleep(sleepTime);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+			sleepTime += sentTime - System.currentTimeMillis();
+		}
+	}
 	
 	/**
 	 * Close the connection to the icecast server
@@ -110,4 +119,6 @@ public class Shouter{
 		this.connected = false;
 		this.mysocket.close();
 	}
+	
+	// add some functionality to publish changes to streamconfig
 }

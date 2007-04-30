@@ -31,7 +31,7 @@ public class Segment {
 	/**
 	 * Create a new Segment object
 	 * @param d byte array of media data
-	 * @param t milliseconds to play the data
+	 * @param t the number of milliseconds the data represents
 	 */
 	public Segment(byte[] d, long t) {
 		this.time = t;
@@ -72,7 +72,7 @@ public class Segment {
 	
 	/**
 	 * Get Data size
-	 * @return the number of bytes in the segment
+	 * @return the number of bytes in the Segment
 	 */
 	public int getSize() {
 		return this.data.length;
