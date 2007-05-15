@@ -33,20 +33,17 @@ public class Tester {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		StreamConfig sc = new StreamConfig();
-		sc.setHostname("172.26.17.19");
-		sc.setHostport(8000);
-		sc.setUsername("source");
-		sc.setPassword("hackme");
-		sc.setMount("bob");
-		sc.setName("helllooo");
-		
-		Shouter sout = new Shouter(sc);
-		
-		File f1 = new File("cake.mp3");
-		
+	public static void main(String[] args) {		
 		try {
+			Shouter sout = new Shouter();
+			sout.setHostname("172.26.17.19");
+			sout.setHostport(8000);
+			sout.setUsername("source");
+			sout.setPassword("hackme");
+			sout.setMount("bob");
+			sout.setName("helllooo");
+			
+			File f1 = new File("cake.mp3");
 			FileReader m3a = new MP3Reader(f1);
 			
 			if (!sout.connect()) {

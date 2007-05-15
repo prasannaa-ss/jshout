@@ -23,11 +23,21 @@
 
 package com.ourbunny.jshout;
 
+import java.io.IOException;
 import java.net.*;
 
 public class Shouter{
 	// stream config info
-	private StreamConfig config;
+	private String		hostname = "localhost";
+	private int			hostport = 8000;
+	private String		username = "source";
+	private String		password;
+	private String		mount;
+	private String		name;
+	private String		genre;
+	private String		agent = "jstreamer/0.1";
+	private String		description;
+	private boolean		isPublic = true;
 	
 	// networking variables
 	private StreamSocket mysocket;
@@ -38,63 +48,57 @@ public class Shouter{
 	private long sleepTime = 0;
 	
 	/**
-	 * Creates a new Shouter based on the StreamConfig settings
-	 * @param c the StreamConfig settings
-	 */
-	public Shouter(StreamConfig c) {
-		this.config = c;
-	}
-	
-	/**
 	 * Connect to the icecast server 
-	 * @return true if the connect is established
-	 * @throws Exception
+	 * @return true if a connection is established
+	 * @throws ShouterException if already connected
 	 */
-	public boolean connect() throws Exception{
-		if (!connected) {
-			Socket shoutSocket = new Socket(config.getHostname(), config.getHostport());  // unknown host exception
-			mysocket = new StreamSocket (shoutSocket);  // throws io exception
-			
-			// send SOURCE request
-			mysocket.print(config.getHttpRequest());
-			
-			// get response
-			System.out.println("Waiting for reply...");
-			String s;
-			while((s = mysocket.readLine()) != null) {
-				System.out.println(s);
-				if (s.equals("HTTP/1.0 200 OK")){
-					break;
-				} else {
-					connected = false;
-					return false;
-				}
-			}
-			
-			connected = true;
-			return true;
-		} else {
-			// fix logic here
-			// connected = false;
-			return false;
+	public boolean connect() throws ShouterException, IOException, UnknownHostException{
+		if (connected) {
+			// already connected exception
+			throw new ShouterException();
 		}
+		
+		Socket shoutSocket = new Socket(this.getHostname(), this.getHostport());  // unknown host exception
+		mysocket = new StreamSocket (shoutSocket);  // throws io exception
+			
+		// send SOURCE request
+		mysocket.print(this.getHttpRequest());
+			
+		// get response
+		System.out.println("Waiting for reply...");
+		String s;
+		while((s = mysocket.readLine()) != null) {
+			System.out.println(s);
+			if (s.equals("HTTP/1.0 200 OK")){
+				break;
+			} else {
+				connected = false;
+				return false;
+			}
+		}
+			
+		connected = true;
+		return true;
 	}
 	
 	/**
 	 * Send a Segment of data to the server.
 	 * @param s the Segment of data to send to the server
-	 * @throws Exception
+	 * @throws ShouterException if already connected
 	 */
-	public void send(Segment s) throws Exception{
-		if (connected) {
-			// write data
-			mysocket.print(s.getData()); // IO exception
-			mysocket.flush();
-			
-			// update timing
-			sentTime = System.currentTimeMillis();
-			sleepTime += s.getTime();
+	public void send(Segment s) throws ShouterException, IOException{
+		if (!connected) {
+			// already connected exception
+			throw new ShouterException();
 		}
+		
+		// write data
+		mysocket.print(s.getData()); // throws IO exception
+		mysocket.flush(); // is this needed?
+			
+		// update timing
+		sentTime = System.currentTimeMillis();
+		sleepTime += s.getTime();
 	}
 	
 	/**
@@ -121,4 +125,244 @@ public class Shouter{
 	}
 	
 	// add some functionality to publish changes to streamconfig
+	
+	/**
+	 * Get the stream's description
+	 * @return the description of the stream
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Set the stream's description
+	 * @param description the description of the stream
+	 * @throws ShouterException if already connected
+	 */
+	public void setDescription(String description) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.description = description;
+	}
+	
+	/**
+	 * Get the stream's genre
+	 * @return the stream's genre
+	 */
+	public String getGenre() {
+		return genre;
+	}
+	
+	/**
+	 * Set the stream's genre
+	 * @param genre the stream's genre
+	 * @throws ShouterException if already connected
+	 */
+	public void setGenre(String genre) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.genre = genre;
+	}
+	
+	/**
+	 * Get the hostname for the stream to connect to
+	 * @return the hostname of the server to connect to
+	 * @throws ShouterException if already connected
+	 */
+	public String getHostname() {
+		return hostname;
+	}
+	
+	/**
+	 * Sets the hostname for the stream connect to
+	 * @param hostname The hostname of the server to connect to
+	 * @throws ShouterException if already connected
+	 */
+	public void setHostname(String hostname) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.hostname = hostname;
+	}
+	
+	/**
+	 * Get the port number on the host to connect to
+	 * @return the port number on the host to connect to
+	 */
+	public int getHostport() {
+		return hostport;
+	}
+	
+	/**
+	 * Set the port number on the host to connect to
+	 * @param hostport the port number on the host to connect to
+	 * @throws ShouterException if already connected
+	 */
+	public void setHostport(int hostport) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.hostport = hostport;
+	}
+	
+	/**
+	 * Check if the stream should be listed as public
+	 * @return whether or not the stream is public
+	 */
+	public boolean isPublic() {
+		return isPublic;
+	}
+	
+	/**
+	 * Set the stream to be listed as public or not
+	 * @param isPublic whether or not the stream is public
+	 * @throws ShouterException if already connected
+	 */
+	public void setPublic(boolean isPublic) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.isPublic = isPublic;
+	}
+	
+	/**
+	 * Get the mountpoint used to connect to the server
+	 * @return the name of the mountpoint
+	 */
+	public String getMount() {
+		return mount;
+	}
+	
+	/**
+	 * Set the mountpoint used to connect to the server
+	 * @param mount the name of the mountpoint
+	 * @throws ShouterException if already connected
+	 */
+	public void setMount(String mount) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.mount = mount;
+	}
+	
+	/**
+	 * Get the name of the stream
+	 * @return the name of the stream
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Sets the name of the stream
+	 * @param name the name of the stream
+	 * @throws ShouterException if already connected
+	 */
+	public void setName(String name) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.name = name;
+	}
+	
+	/**
+	 * Get the password to connect to the server
+	 * @return The password in plaintext
+	 */
+	public String getPassword() {
+		return password;
+	}
+	
+	/**
+	 * Set the password to connect to the server
+	 * @param password the password in plaintext
+	 * @throws ShouterException if already connected
+	 */
+	public void setPassword(String password) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.password = password;
+	}
+	
+	/**
+	 * Get the username to connect to the server with
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+	
+	/**
+	 * Sets the username to connect to the server with
+	 * @param username the username
+	 * @throws ShouterException if already connected
+	 */
+	public void setUsername(String username) throws ShouterException {
+		if (this.connected) {
+			throw new ShouterException();
+		}
+		
+		this.username = username;
+	}
+	
+	/**
+	 * Get the UserAgent string used in HTTP
+	 * @return the UserAgent
+	 */
+	public String getAgent() {
+		return agent;
+	}
+	
+	// Private method to generate the username:password
+	// combination used in the HTTP request.
+	// Relies on the Base64.java library.
+	private String getBase64Auth() {
+		String i = getUsername() + ":" + getPassword();
+		return Base64.encodeBytes(i.getBytes());
+	}
+	
+	/**
+	 * Get the HTTP Request byte array used to initiate
+	 * A connection with the icecast server
+	 * 
+	 * @return the HTTP Request byte array
+	 */
+	public byte[] getHttpRequest() {
+		String RN = "\r\n";
+		String request = "SOURCE /" + getMount() + " HTTP/1.0" + RN;
+		request += "Content-Type: audio/mpeg" + RN;
+		request += "Authorization: Basic " + getBase64Auth() + RN;
+		request += "User-Agent: " + getAgent() + RN;
+		request += "ice-name: " + getName() + RN;
+		// request += "ice-url: " + this.url + RN;
+		request += "ice-genre: " + getGenre() + RN;
+		// request += "ice-bitrate: " + this.bitrate + RN;
+		
+		request += "ice-public: ";
+		if (isPublic()) {
+			request += "1" + RN;
+		} else {
+			request += "0" + RN;
+		}
+		request += "ice-description: " + getDescription() + RN;
+		request += RN;
+		
+		return request.getBytes();
+	}
+
+	/*
+	 * TODO:
+	 * 		ID3 Header/metadata
+	 */
 }
