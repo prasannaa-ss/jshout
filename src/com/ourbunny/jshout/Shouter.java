@@ -25,6 +25,9 @@ package com.ourbunny.jshout;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Shouter{
 	// stream config info
@@ -38,6 +41,8 @@ public class Shouter{
 	private String		agent = "jstreamer/0.1";
 	private String		description;
 	private boolean		isPublic = true;
+	private HashMap<String, String> meta = new HashMap<String, String>();
+	
 	
 	// networking variables
 	private StreamSocket mysocket;
@@ -59,7 +64,7 @@ public class Shouter{
 		}
 		
 		Socket shoutSocket = new Socket(this.getHostname(), this.getHostport());  // unknown host exception
-		mysocket = new StreamSocket (shoutSocket);  // throws io exception
+		mysocket = new StreamSocket(shoutSocket);  // throws io exception
 			
 		// send SOURCE request
 		mysocket.print(this.getHttpRequest());
@@ -120,8 +125,8 @@ public class Shouter{
 	 * Close the connection to the icecast server
 	 */
 	public void close() {
-		this.connected = false;
-		this.mysocket.close();
+		connected = false;
+		mysocket.close();
 	}
 	
 	// add some functionality to publish changes to streamconfig
@@ -140,7 +145,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setDescription(String description) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -161,7 +166,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setGenre(String genre) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -183,7 +188,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setHostname(String hostname) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -204,7 +209,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setHostport(int hostport) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -225,7 +230,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setPublic(boolean isPublic) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -246,7 +251,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setMount(String mount) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -267,7 +272,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setName(String name) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -288,7 +293,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setPassword(String password) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -309,7 +314,7 @@ public class Shouter{
 	 * @throws ShouterException if already connected
 	 */
 	public void setUsername(String username) throws ShouterException {
-		if (this.connected) {
+		if (connected) {
 			throw new ShouterException();
 		}
 		
@@ -361,8 +366,43 @@ public class Shouter{
 		return request.getBytes();
 	}
 
-	/*
-	 * TODO:
-	 * 		ID3 Header/metadata
-	 */
+	public void setMetadata() throws IOException, UnknownHostException{
+		// open new socket
+		Socket shoutSocket = new Socket(this.getHostname(), this.getHostport());  // unknown host exception
+		StreamSocket metaSock = new StreamSocket(shoutSocket);  // throws io exception
+		
+		// get data
+		String data = this.convertMetadata();
+		
+		// get auth
+		
+		// build string
+		String sendString = "GET /admin/metadata?mode=updinfo&mount=" + this.mount + "&" + data 
+			+ " HTTP/1.0\r\nUser-Agent: " + this.agent + "\r\n" + this.getBase64Auth() + "\r\n";
+		
+		// send string
+		metaSock.println(sendString);
+		
+		// close socket
+		metaSock.close();
+	}
+	
+	public void updateMetadata(String id, String value) {
+		// TODO: clean id and value
+		this.meta.put(id, value);
+	}
+	
+	private String convertMetadata() {
+		String returnMe = "";
+		
+		Set<String> keys =  this.meta.keySet();
+		Iterator<String> itr = keys.iterator();
+		
+		while (itr.hasNext()) {
+			String key = itr.next();
+			returnMe += "&" + key + "=" + this.meta.get(key);
+		}
+		
+		return returnMe;
+	}
 }
