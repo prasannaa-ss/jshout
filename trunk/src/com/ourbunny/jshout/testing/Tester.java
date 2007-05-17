@@ -1,6 +1,5 @@
 /*
- *	Parts of this file are bassed off of the JRoar source code... GPL rocks
- *	Copyright (C) 2001,2002 ymnk, JCraft,Inc.
+ * 
  *	=======================================================================
  * 	jShout - Stream audio from your program to an (ice/shout)cast server
  *	Copyright (C) 2007  Tommy Murphy
@@ -30,39 +29,36 @@ import com.ourbunny.jshout.FileReader;
 
 public class Tester {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {		
 		try {
 			Shouter sout = new Shouter();
-			sout.setHostname("172.26.17.19");
+			sout.setHostname("192.168.1.35");
 			sout.setHostport(8000);
 			sout.setUsername("source");
 			sout.setPassword("hackme");
-			sout.setMount("bob");
-			sout.setName("helllooo");
+			sout.setMount("jShout");
+			sout.setName("Java Stream");
+			sout.updateMetadata("song", "Tommy Jam");
 			
+			// load the file
 			File f1 = new File("cake.mp3");
 			FileReader m3a = new MP3Reader(f1);
 			
+			// connect to the server
 			if (!sout.connect()) {
 				System.out.println("connection error");
 			}
 			
+			// send metadata to server
+			sout.setMetadata();
+			
+			// send data
 			System.out.println("sending data...");
-			int i = 0;
 			while (m3a.hasNext()) {
 				sout.send(m3a.next());
 				sout.sync();
-				if (i < 40) {
-					i++;
-					System.out.print('.');
-				} else {
-					i = 0;
-					System.out.println('.');
-				}
 			}
+			
 			System.out.println("done!");
 		} catch (Exception e) {
 			e.printStackTrace();

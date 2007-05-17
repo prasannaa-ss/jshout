@@ -24,6 +24,7 @@
 package com.ourbunny.jshout;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,7 +55,7 @@ public class Shouter{
 	
 	/**
 	 * Connect to the icecast server 
-	 * @return true if a connection is established
+	 * @return <var>true</var> if a connection is established
 	 * @throws ShouterException if already connected
 	 */
 	public boolean connect() throws ShouterException, IOException, UnknownHostException{
@@ -70,14 +71,13 @@ public class Shouter{
 		mysocket.print(this.getHttpRequest());
 			
 		// get response
-		System.out.println("Waiting for reply...");
+		//System.out.println("Waiting for reply...");
 		String s;
 		while((s = mysocket.readLine()) != null) {
-			System.out.println(s);
+			//System.out.println(s);
 			if (s.equals("HTTP/1.0 200 OK")){
 				break;
 			} else {
-				connected = false;
 				return false;
 			}
 		}
@@ -333,17 +333,13 @@ public class Shouter{
 	// combination used in the HTTP request.
 	// Relies on the Base64.java library.
 	private String getBase64Auth() {
-		String i = getUsername() + ":" + getPassword();
+		String i = this.getUsername() + ":" + this.getPassword();
 		return Base64.encodeBytes(i.getBytes());
 	}
 	
-	/**
-	 * Get the HTTP Request byte array used to initiate
-	 * A connection with the icecast server
-	 * 
-	 * @return the HTTP Request byte array
-	 */
-	public byte[] getHttpRequest() {
+	// Get the HTTP Request byte array used to initiate
+	// A connection with the icecast server
+	private byte[] getHttpRequest() {
 		String RN = "\r\n";
 		String request = "SOURCE /" + getMount() + " HTTP/1.0" + RN;
 		request += "Content-Type: audio/mpeg" + RN;
@@ -366,32 +362,67 @@ public class Shouter{
 		return request.getBytes();
 	}
 
-	public void setMetadata() throws IOException, UnknownHostException{
+	/**
+	 * Send the current metadata to the icecast server
+	 * @throws IOException
+	 * @throws UnknownHostException
+	 * @return true if the metadata was successfully transmitted
+	 */
+	public boolean setMetadata() throws IOException, UnknownHostException{
 		// open new socket
 		Socket shoutSocket = new Socket(this.getHostname(), this.getHostport());  // unknown host exception
 		StreamSocket metaSock = new StreamSocket(shoutSocket);  // throws io exception
 		
 		// get data
-		String data = this.convertMetadata();
+		String data = this.convertMetadata(); // has a leading &
 		
 		// get auth
+		String auth = "Authorization: Basic " + this.getBase64Auth() + "\r\n";
 		
 		// build string
-		String sendString = "GET /admin/metadata?mode=updinfo&mount=" + this.mount + "&" + data 
-			+ " HTTP/1.0\r\nUser-Agent: " + this.agent + "\r\n" + this.getBase64Auth() + "\r\n";
+		String sendString = "GET /admin/metadata?mode=updinfo&mount=/" + this.mount + data 
+			+ " HTTP/1.0\r\nUser-Agent: " + this.agent + "  \r\n"  + auth + "\r\n";
 		
 		// send string
 		metaSock.println(sendString);
 		
+		// get response
+		//System.out.println("Waiting for reply...");
+		String s;
+		while((s = metaSock.readLine()) != null) {
+			if (s.equals("HTTP/1.0 200 OK")){
+				break;
+			} else {
+				metaSock.close();
+				return false;
+			}
+		}
+		
 		// close socket
 		metaSock.close();
+		
+		// success
+		return true;
 	}
 	
-	public void updateMetadata(String id, String value) {
-		// TODO: clean id and value
-		this.meta.put(id, value);
+	/**
+	 * Update a metadata value
+	 * @param key the variable name to set
+	 * @param value the value of that variable
+	 */
+	public void updateMetadata(String key, String value) {
+		try {
+			key = URLEncoder.encode(key, "UTF-8");
+			value = URLEncoder.encode(value,"UTF-8");
+		
+			this.meta.put(key, value);
+		} catch (UnsupportedEncodingException e) {
+			// this should never happen: "UTF-8" exists
+			return;
+		}
 	}
 	
+	// turn the hashmap into a string connected by &'s
 	private String convertMetadata() {
 		String returnMe = "";
 		

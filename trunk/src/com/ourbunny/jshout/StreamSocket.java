@@ -1,5 +1,5 @@
 /*
- *	Parts of this file are bassed off of the JRoar source code... GPL rocks
+ *	Parts of this file are bassed off of the JRoar source code.
  *	Copyright (C) 2001,2002 ymnk, JCraft,Inc.
  *	=======================================================================
  * 	jShout - Stream audio from your program to an (ice/shout)cast server
